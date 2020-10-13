@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+        <title>Rose Project</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel='stylesheet' />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" rel='stylesheet' />
+        <style>
+            .fc-title{
+                font-size: 13pt;
+            }
+            #addMemberButton {
+                margin-bottom: 10px;
+            }
+
+            .removeBorder {
+                border: none;
+            }
+            body{
+                background-color: #F0F0F0;
+            }
+        </style>
+    </head>
+	<body>
+        <div class="ui container">
+
+            
+          <br/>
+          <div class="ui container">
+            <div class="ui grid">
+                <div class="ui sixteen column">
+                    <div style="display:block;" id="calendar"></div>
+                    <div style="display:none;" id="dropdown" class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" onclick="switchViews()">Back to Calendar</button>
+                            <!-- <form [formGroup]="memberForm" > -->
+                                <table id="mytable" z>
+                                  <thead>
+                                    <tr>
+                                      <th>Job ID</th>
+                                      <th>Table Name</th>
+                                      <th>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  
+                                  <tbody formArrayName="myRows">
+                                    <!-- <tr *ngFor="let member of members; let i = index;" [formGroupName]="i"> -->
+                                      <!-- <td><input style="margin-top:10px;" type="checkbox" value="Bike"></td>
+                                      <td><input class="form-control " id="firstName" formControlName="firstName" type="text" [value]="member.firstName"></td>
+                                      <td><input class="form-control " id="lastName" formControlName="lastName" type="text" [value]="member.lastName"></td>
+
+                                      
+                                      <td>
+                                        <div class="btn-group">
+                                          <button onclick="" class="btn btn-success">Update</button>
+                                          <button onclick="" class="btn btn-danger">Delete</button>
+                                        </div>
+                                      </td> -->
+                                    <!-- </tr> -->
+                                  </tbody>
+                                </table>
+                              <!-- </form> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          
+          
+          </div>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+        </script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js">
+        </script>
+        
+        <script type="text/javascript">
+
+            let loadTable = function(){
+                $('#mytable tbody').empty();
+                var html = '';
+                if( $('#mytable:visible').length !== 0 ){
+                    for(var i = 0; i < tableData.length; i++){
+                        html += '<tr><td>' + tableData[i].jobId + 
+                        '</td><td>' + tableData[i].tableName + 
+                        '</td><td>' + '<select id="servers" class="servers browser-default custom-select">' +
+                            '</select>' + '</td><td>' + '<button class="btn btn-primary btn-sm">Move</button>' +
+                            '<button class="btn btn-success btn-sm">Process</button>' +'</td></tr>';
+                        
+                    }
+                    $('#mytable tbody').append(html);
+                } 
+                var option = '<option selected>Choose Server</option>';
+                for (var i=0;i<serverData.length;i++){
+                    option += '<option value="'+ serverData[i].serverName + '">' + serverData[i].serverName + '</option>';
+                }
+                $('.servers').append(option);    
+            }
+
+            let switchViews = function(){
+                
+                if( $('#calendar:visible').length !== 0 ){
+                    $('#calendar').css('display', 'none');
+                    $('#dropdown').css('display', 'block');
+                } else {
+                    $('#calendar').css('display', 'block');
+                    $('#dropdown').css('display', 'none');
+                }
+
+            }
+
+            let tableData = [];
+            let serverData = [{serverName: 'Server1'}, {serverName: 'Server2'}];
+            
+            let CAL = [];
+            let EVENTS = [];
+
+            let jobs = [
+                { "jobId": "1",
+                "jobName": "job1",
+                "jobQueue": "HighPriority",
+                "jobDefinition": "2020-09-15"
+                },
+                {
+                "jobId": "2",
+                "jobName": "job2",
+                "jobQueue": "lower Priority",
+                "jobDefinition": "2020-09-18"
+                },
+                {
+                "jobId": "3",
+                "jobName": "job3",
+                "jobQueue": "lower Priority",
+                "jobDefinition": "2020-09-24"
+                }
+            ];
+            let tables = [
+                {
+                "jobId": "1",
+                "tableName": "table1"
+                },
+                {
+                "jobId": "1",
+                "tableName": " table2"
+                },
+                {
+                "jobId": "2",
+                "tableName": "table3"
+                },
+                {
+                "jobId": "2",
+                "tableName": " table4"
+                },
+                {
+                "jobId": "3",
+                "tableName": " table5"
+                },
+                {
+                "jobId": "3", 
+                "tableName": " table6"
+                }
+
+            ];
+
+            
+			$(document).ready(function() {
+                
+                for(let i = 0; i < jobs.length; i++){
+                    EVENTS.push(
+                        {
+                            title: jobs[i].jobName,
+                            start: jobs[i].jobDefinition,
+                            textColor: '#fff',
+                            backgroundColor: '#0375FF'
+                        }
+                    )
+                }
+            
+                $('#calendar').fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay'
+                    },
+                    
+                    defaultDate: '2020-09-30',
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: true,
+                    eventLimit: true, // allow "more" link when too many events
+                    eventClick: function(info) {
+                        
+                        localStorage.setItem('currJob', info.title);
+                        switchViews();
+                        tableData = [];
+                        $('#tables').empty();
+
+                        for(let i = 0; i < jobs.length; i++){
+                            for(let j = 0; j < tables.length; j++){
+                                if(jobs[i].jobId === tables[j].jobId){
+                                    if(localStorage.getItem('currJob') === jobs[i].jobName){
+                                        tableData.push({ 
+                                            "tableName": tables[j].tableName,
+                                            "jobId": tables[j].jobId
+                                        });
+                                    }
+                                    
+                                }
+                            }
+                        }
+                        loadTable();
+                        // var option = '<option selected>Select Table</option>';
+                        // for (var i=0;i<tableData.length;i++){
+                        //     option += '<option value="'+ tableData[i].tableName + '">' + tableData[i].tableName + '</option>';
+                        // }
+                        // $('#tables').append(option);
+                    }
+                });
+
+                CAL = $('#calendar').fullCalendar('getCalendar');
+                CAL.refresh = function() {
+                    CAL.removeEvents();
+                    CAL.addEventSource(EVENTS);
+                }
+                CAL.refresh();
+	        });
+		</script>
+	</body>
+	</html>
